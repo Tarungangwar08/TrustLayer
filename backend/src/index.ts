@@ -6,6 +6,7 @@ import { env } from './config/env';
 import { errorHandler } from './middleware/errorHandler';
 import { connectDatabase, disconnectDatabase } from './config/database';
 import authRoutes from './routes/authRoutes';
+import credentialRoutes from './routes/credentialRoutes';
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.get('/api/health', (_req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/credentials', credentialRoutes);
 
 app.use(errorHandler);
 

@@ -99,8 +99,8 @@ FRONTEND_URL=http://localhost:3000
 ## Build Steps (We Are Here)
 - [x] Step 1 — Project scaffold + Express server + health check
 - [x] Step 2 — PostgreSQL schema + Prisma models + Docker DB
-- [ ] Step 3 — Auth system (register, login, JWT middleware)
-- [ ] Step 4 — Crypto service (Merkle tree, EdDSA, selective disclosure)
+- [x] Step 3 — Auth system (register, login, JWT middleware)
+- [x] Step 4 — Crypto service (Merkle tree, EdDSA, selective disclosure)
 - [ ] Step 5 — Credential APIs (issue, list, share, verify)
 - [ ] Step 6 — Frontend setup + auth pages
 - [ ] Step 7 — Holder interface (dashboard, issue, share modal, QR)
@@ -109,7 +109,9 @@ FRONTEND_URL=http://localhost:3000
 ## Current Completed Steps
 Step 1 ✓ — Project scaffold + Express server
 Step 2 ✓ — PostgreSQL schema + Prisma + Docker (port 5433)
-Next: Step 3 — Auth system
+Step 3 ✓ — Auth system (register, login, JWT middleware)
+Step 4 ✓ — Crypto service (Merkle tree + EdDSA + selective disclosure)
+Next: Step 5 — Credential APIs
 
 ## Important Notes
 - Docker PostgreSQL runs on port 5433 (not 5432)
