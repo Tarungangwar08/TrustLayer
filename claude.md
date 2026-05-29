@@ -31,23 +31,23 @@ selective-disclosure/
 │   │   └── index.ts
 │   ├── prisma/
 │   │   └── schema.prisma
-│   └── .env
+│   └── .env               ← never commit this file
 └── frontend/
     ├── app/
     │   ├── (auth)/login/page.tsx
     │   ├── (auth)/register/page.tsx
-    │   ├── dashboard/page.tsx          ← Step 7
-    │   ├── credentials/page.tsx        ← Step 7
-    │   ├── credentials/issue/page.tsx  ← Step 7
-    │   ├── share/[token]/page.tsx      ← Step 8
+    │   ├── dashboard/page.tsx
+    │   ├── credentials/page.tsx
+    │   ├── credentials/issue/page.tsx
+    │   ├── share/[token]/page.tsx
     │   ├── layout.tsx
     │   └── page.tsx
     ├── components/
-    │   ├── layout/AppLayout.tsx        ← Step 7
+    │   ├── layout/AppLayout.tsx
     │   ├── credentials/
-    │   │   ├── CredentialCard.tsx      ← Step 7
-    │   │   ├── SelectiveShareModal.tsx ← Step 7
-    │   │   └── QRCodeDisplay.tsx       ← Step 7
+    │   │   ├── CredentialCard.tsx
+    │   │   ├── SelectiveShareModal.tsx
+    │   │   └── QRCodeDisplay.tsx
     │   └── ProtectedRoute.tsx
     ├── context/AuthContext.tsx
     └── lib/api.ts, auth.ts
@@ -60,26 +60,19 @@ selective-disclosure/
 - [x] Step 5 — Credential APIs (issue, list, share, verify)
 - [x] Step 6 — Frontend setup + auth pages (login, register)
 - [x] Step 7 — Holder interface (dashboard, issue, share modal, QR)
-- [ ] Step 8 — Verifier page + Docker + README
+- [x] Step 8 — Verifier page + Docker + README
 
-## Current Completed Steps
-Step 1 ✓ — Project scaffold + Express server (port 5000)
-Step 2 ✓ — PostgreSQL schema + Prisma + Docker (port 5433)
-Step 3 ✓ — Auth system (register, login, JWT middleware)
-Step 4 ✓ — Crypto service (Merkle tree + EdDSA + selective disclosure)
-Step 5 ✓ — Credential APIs (issue, list, share, verify)
-Step 6 ✓ — Frontend setup + auth pages (Next.js 16 + shadcn)
-Next: Step 7 — Holder interface (dashboard, issue, share modal, QR)
-Next: Step 8 — Verifier page + Docker + README
+## ALL STEPS COMPLETE ✓
+Project is fully built and ready for AWS deployment.
 
 ## Backend API Endpoints (All Tested and Working)
-POST /api/auth/register           → public
-POST /api/auth/login              → public
-POST /api/credentials/issue       → AUTH required
-GET  /api/credentials             → AUTH required
-POST /api/credentials/share       → AUTH required
+POST /api/auth/register            → public
+POST /api/auth/login               → public
+POST /api/credentials/issue        → AUTH required
+GET  /api/credentials              → AUTH required
+POST /api/credentials/share        → AUTH required
 GET  /api/credentials/share/:token → public
-POST /api/credentials/verify      → public, rate limited (20/min)
+POST /api/credentials/verify       → public, rate limited (20/min)
 
 ## API Response Shape (ALWAYS follow this)
 Success: { "success": true, "data": { ... } }
@@ -91,7 +84,7 @@ Error:   { "success": false, "error": { "code": "ERROR_CODE", "message": "..." }
 - Always run backend commands from inside backend/ folder
 - Use Invoke-RestMethod for PowerShell API testing (not curl)
 - Frontend runs on port 3000, backend on port 5000
-- qrcode.react installed in frontend for Step 7
+- See backend/.env.example for required environment variables
 
 ## Coding Rules (NEVER break these)
 1. No `any` types in TypeScript — ever
@@ -127,18 +120,15 @@ Error:   { "success": false, "error": { "code": "ERROR_CODE", "message": "..." }
 - Sensitive crypto data stored as JSONB in PostgreSQL
 
 ## Environment Variables
-backend/.env:
-  PORT=5000
-  NODE_ENV=development
-  DATABASE_URL=postgresql://postgres:password@127.0.0.1:5433/selective_disclosure
-  JWT_SECRET=myjwtsecretkey1234567890abcdefghijklmnop
-  JWT_EXPIRES_IN=7d
-  ENCRYPTION_KEY=12345678901234567890123456789012
-  FRONTEND_URL=http://localhost:3000
+See backend/.env.example for all required variables.
+Never commit real secrets to Git.
+Required backend variables:
+  PORT, NODE_ENV, DATABASE_URL,
+  JWT_SECRET, JWT_EXPIRES_IN,
+  ENCRYPTION_KEY, FRONTEND_URL
 
-frontend/.env.local:
-  NEXT_PUBLIC_API_URL=http://localhost:5000/api
-  NEXT_PUBLIC_APP_URL=http://localhost:3000
+Required frontend variables:
+  NEXT_PUBLIC_API_URL, NEXT_PUBLIC_APP_URL
 
 ## What NOT To Do
 - Do not add extra dependencies not listed in the step prompt
