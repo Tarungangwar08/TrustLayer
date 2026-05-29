@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(uuid())
+  name         String
+  email        String       @unique
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  credentials  Credential[]
+
+  @@map("users")
+}
+
+model Credential {
+  id     String @id @default(uuid())
+  userId String
+
+  metadata Json
+
+  signedCredential Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sharePresentations SharePresentation[]
+
+  @@index([userId])
+  @@map("credentials")
+}
+
+model SharePresentation {
+  id           String @id @default(uuid())
+  credentialId String
+  userId       String
+
+  shareToken String @unique @default(uuid())
+
+  presentation Json
+
+  selectedFields String[]
+  expiresAt      DateTime
+  viewCount      Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  credential Credential @relation(fields: [credentialId], references: [id], onDelete: Cascade)
+
+  @@index([shareToken])
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("share_presentations")
+}
