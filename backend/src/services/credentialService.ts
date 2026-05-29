@@ -125,9 +125,7 @@ export async function createSharePresentation(
     data: {
       credentialId,
       userId,
-      presentation: presentation as unknown as Parameters<
-        typeof prisma.sharePresentation.create
-      >[0]['data']['presentation'],
+      presentation: presentation as unknown as never,
       selectedFields,
       expiresAt: new Date(presentation.expiresAt),
     },

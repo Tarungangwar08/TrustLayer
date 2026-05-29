@@ -59,7 +59,7 @@ selective-disclosure/
 - [x] Step 4 — Crypto service (Merkle tree, EdDSA, selective disclosure)
 - [x] Step 5 — Credential APIs (issue, list, share, verify)
 - [x] Step 6 — Frontend setup + auth pages (login, register)
-- [ ] Step 7 — Holder interface (dashboard, issue, share modal, QR)
+- [x] Step 7 — Holder interface (dashboard, issue, share modal, QR)
 - [ ] Step 8 — Verifier page + Docker + README
 
 ## Current Completed Steps
@@ -69,7 +69,8 @@ Step 3 ✓ — Auth system (register, login, JWT middleware)
 Step 4 ✓ — Crypto service (Merkle tree + EdDSA + selective disclosure)
 Step 5 ✓ — Credential APIs (issue, list, share, verify)
 Step 6 ✓ — Frontend setup + auth pages (Next.js 16 + shadcn)
-Next: Step 7 — Holder interface
+Next: Step 7 — Holder interface (dashboard, issue, share modal, QR)
+Next: Step 8 — Verifier page + Docker + README
 
 ## Backend API Endpoints (All Tested and Working)
 POST /api/auth/register           → public
