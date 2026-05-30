@@ -30,6 +30,30 @@ function validate(
   return null;
 }
 
+interface PasswordStrength {
+  score: number;
+  label: string;
+  barClass: string;
+  textClass: string;
+}
+
+function getPasswordStrength(password: string): PasswordStrength {
+  let score = 0;
+  if (password.length >= 8) score += 1;
+  if (password.length >= 12) score += 1;
+  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 1;
+  if (/\d/.test(password)) score += 1;
+  if (/[^A-Za-z0-9]/.test(password)) score += 1;
+
+  if (score <= 2) {
+    return { score, label: 'Weak', barClass: 'bg-red-500', textClass: 'text-red-600' };
+  }
+  if (score <= 3) {
+    return { score, label: 'Medium', barClass: 'bg-amber-500', textClass: 'text-amber-600' };
+  }
+  return { score, label: 'Strong', barClass: 'bg-green-600', textClass: 'text-green-600' };
+}
+
 export default function RegisterPage() {
   const { register } = useAuth();
   const [name, setName] = useState('');
@@ -37,6 +61,8 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const strength = getPasswordStrength(password);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -60,16 +86,20 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-muted/30 px-4">
-      <div className="mb-8 flex flex-col items-center gap-2">
-        <div className="flex items-center gap-2">
-          <Shield className="size-8 text-primary" />
-          <span className="text-2xl font-semibold tracking-tight">TrustLayer</span>
+    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-indigo-50 via-white to-white px-4 py-8">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(60%_60%_at_50%_0%,theme(colors.indigo.100),transparent)]" />
+
+      <div className="animate-fade-in-up mb-8 flex flex-col items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          <span className="flex size-11 items-center justify-center rounded-xl bg-indigo-600 shadow-md">
+            <Shield className="size-6 text-white" />
+          </span>
+          <span className="text-3xl font-semibold tracking-tight text-gray-900">TrustLayer</span>
         </div>
-        <p className="text-sm text-muted-foreground">Secure Credential Sharing</p>
+        <p className="text-sm text-gray-500">Secure credential sharing made simple</p>
       </div>
 
-      <Card className="w-full max-w-sm">
+      <Card className="animate-scale-in w-full max-w-sm shadow-md">
         <CardHeader>
           <CardTitle>Create account</CardTitle>
           <CardDescription>Sign up to start sharing credentials securely</CardDescription>
@@ -87,6 +117,7 @@ export default function RegisterPage() {
                 required
                 disabled={isLoading}
                 autoComplete="name"
+                className="transition-shadow focus-visible:border-indigo-500 focus-visible:ring-indigo-500/30"
               />
             </div>
 
@@ -101,6 +132,7 @@ export default function RegisterPage() {
                 required
                 disabled={isLoading}
                 autoComplete="email"
+                className="transition-shadow focus-visible:border-indigo-500 focus-visible:ring-indigo-500/30"
               />
             </div>
 
@@ -115,7 +147,29 @@ export default function RegisterPage() {
                 required
                 disabled={isLoading}
                 autoComplete="new-password"
+                className="transition-shadow focus-visible:border-indigo-500 focus-visible:ring-indigo-500/30"
               />
+              {password.length > 0 && (
+                <div className="animate-fade-in mt-1 flex flex-col gap-1">
+                  <div className="flex gap-1">
+                    {[0, 1, 2].map((i) => (
+                      <span
+                        key={i}
+                        className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
+                          (strength.label === 'Weak' && i < 1) ||
+                          (strength.label === 'Medium' && i < 2) ||
+                          (strength.label === 'Strong' && i < 3)
+                            ? strength.barClass
+                            : 'bg-gray-200'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className={`text-xs font-medium ${strength.textClass}`}>
+                    {strength.label} password
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -129,10 +183,15 @@ export default function RegisterPage() {
                 required
                 disabled={isLoading}
                 autoComplete="new-password"
+                className="transition-shadow focus-visible:border-indigo-500 focus-visible:ring-indigo-500/30"
               />
             </div>
 
-            <Button type="submit" className="mt-2 w-full" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="mt-2 w-full bg-indigo-600 transition-all duration-150 hover:scale-[1.02] hover:bg-indigo-700 hover:shadow-md active:scale-100"
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="animate-spin" />
@@ -144,9 +203,9 @@ export default function RegisterPage() {
             </Button>
           </form>
 
-          <p className="mt-4 text-center text-sm text-muted-foreground">
+          <p className="mt-4 text-center text-sm text-gray-500">
             Already have an account?{' '}
-            <Link href="/login" className="font-medium text-primary hover:underline">
+            <Link href="/login" className="font-medium text-indigo-600 hover:underline">
               Sign in
             </Link>
           </p>

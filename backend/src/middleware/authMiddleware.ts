@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
-import { TokenExpiredError } from 'jsonwebtoken';
+import jwt, { TokenExpiredError } from 'jsonwebtoken';
+import { prisma } from '../config/database';
 import { env } from '../config/env';
 
 declare global {
@@ -20,8 +19,6 @@ interface JwtPayload {
   userId: string;
   email: string;
 }
-
-const prisma = new PrismaClient();
 
 export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
   const authHeader = req.headers.authorization;

@@ -128,3 +128,59 @@
     @apply font-sans;
   }
 }
+
+/* ── Design tokens ─────────────────────────────────────────── */
+:root {
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Keyframes ─────────────────────────────────────────────── */
+@keyframes tl-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes tl-fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes tl-scale-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes tl-pop {
+  0% { opacity: 0; transform: scale(0.4); }
+  60% { transform: scale(1.12); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes tl-shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+@keyframes tl-slide-in {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Animation utilities ───────────────────────────────────── */
+.animate-fade-in { animation: tl-fade-in var(--transition-base) ease-out both; }
+.animate-fade-in-up { animation: tl-fade-in-up var(--transition-base) ease-out both; }
+.animate-scale-in { animation: tl-scale-in var(--transition-base) ease-out both; }
+.animate-pop { animation: tl-pop 400ms ease-out both; }
+.animate-shake { animation: tl-shake 400ms ease-in-out both; }
+.animate-slide-in { animation: tl-slide-in var(--transition-base) ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-scale-in,
+  .animate-pop,
+  .animate-shake,
+  .animate-slide-in {
+    animation: none;
+  }
+}

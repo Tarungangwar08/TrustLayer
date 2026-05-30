@@ -14,6 +14,8 @@ import {
   ChevronRight,
   ChevronLeft,
   Loader2,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import {
   Dialog,
@@ -114,8 +116,22 @@ export default function SelectiveShareModal({
     <Dialog open={isOpen} onOpenChange={(open: boolean) => { if (!open) handleClose(); }}>
       <DialogContent className="sm:max-w-md" showCloseButton={!isLoading}>
 
+        {/* Step indicator */}
+        <div className="flex items-center justify-center gap-2 pt-1">
+          {[1, 2, 3].map((s) => (
+            <span
+              key={s}
+              className={cn(
+                'h-1.5 rounded-full transition-all duration-[250ms]',
+                s === step ? 'w-6 bg-indigo-600' : s < step ? 'w-2 bg-indigo-300' : 'w-2 bg-gray-200'
+              )}
+            />
+          ))}
+        </div>
+        <p className="-mt-2 text-center text-xs font-medium text-gray-400">Step {step} of 3</p>
+
         {step === 1 && (
-          <>
+          <div className="animate-slide-in flex flex-col gap-4">
             <DialogHeader>
               <DialogTitle>Select Fields to Share</DialogTitle>
             </DialogHeader>
@@ -126,23 +142,36 @@ export default function SelectiveShareModal({
                 return (
                   <div
                     key={key}
-                    className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2.5"
+                    className={cn(
+                      'flex items-center justify-between rounded-lg border px-3 py-2.5 transition-colors duration-150',
+                      isSelected ? 'border-green-200 bg-green-50/50' : 'border-gray-200'
+                    )}
                   >
                     <div className="flex items-center gap-2.5">
-                      <Icon className="size-4 text-gray-500" />
+                      <Icon className={cn('size-4', isSelected ? 'text-green-600' : 'text-gray-500')} />
                       <span className="text-sm font-medium">{label}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge
                         variant="outline"
                         className={cn(
-                          'text-xs',
+                          'gap-1 text-xs',
                           isSelected
                             ? 'border-green-200 bg-green-50 text-green-700'
                             : 'border-gray-200 bg-gray-100 text-gray-500'
                         )}
                       >
-                        {isSelected ? 'Revealed' : 'Hidden'}
+                        {isSelected ? (
+                          <>
+                            <Eye className="size-3" />
+                            Revealed
+                          </>
+                        ) : (
+                          <>
+                            <EyeOff className="size-3" />
+                            Hidden
+                          </>
+                        )}
                       </Badge>
                       <Switch
                         checked={isSelected}
@@ -156,10 +185,17 @@ export default function SelectiveShareModal({
 
             <div className="flex items-center justify-between border-t pt-3">
               <span className="text-sm text-gray-500">
-                {selectedFields.length} of 7 fields selected
+                <span
+                  key={selectedFields.length}
+                  className="animate-pop inline-block font-semibold text-indigo-600"
+                >
+                  {selectedFields.length}
+                </span>{' '}
+                of 7 fields selected
               </span>
               <Button
                 size="sm"
+                className="gap-1 bg-indigo-600 hover:bg-indigo-700"
                 onClick={() => setStep(2)}
                 disabled={selectedFields.length === 0}
               >
@@ -167,32 +203,36 @@ export default function SelectiveShareModal({
                 <ChevronRight className="size-4" />
               </Button>
             </div>
-          </>
+          </div>
         )}
 
         {step === 2 && (
-          <>
+          <div className="animate-slide-in flex flex-col gap-4">
             <DialogHeader>
               <DialogTitle>Set Link Expiry</DialogTitle>
             </DialogHeader>
 
             <div className="grid grid-cols-2 gap-2">
-              {EXPIRY_OPTIONS.map(({ hours, label }) => (
-                <button
-                  key={hours}
-                  type="button"
-                  disabled={isLoading}
-                  onClick={() => setExpiryHours(hours)}
-                  className={cn(
-                    'rounded-lg border-2 px-4 py-3 text-sm font-medium transition-colors',
-                    expiryHours === hours
-                      ? 'border-indigo-600 bg-indigo-50 text-indigo-600'
-                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50'
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
+              {EXPIRY_OPTIONS.map(({ hours, label }) => {
+                const isActive = expiryHours === hours;
+                return (
+                  <button
+                    key={hours}
+                    type="button"
+                    disabled={isLoading}
+                    onClick={() => setExpiryHours(hours)}
+                    className={cn(
+                      'flex items-center justify-center gap-1.5 rounded-lg border-2 px-4 py-3 text-sm font-medium transition-all duration-150',
+                      isActive
+                        ? 'border-indigo-600 bg-indigo-50 text-indigo-600 shadow-sm'
+                        : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:bg-gray-50'
+                    )}
+                  >
+                    <Clock className={cn('size-4', isActive ? 'text-indigo-600' : 'text-gray-400')} />
+                    {label}
+                  </button>
+                );
+              })}
             </div>
 
             <div className="flex items-center justify-between border-t pt-3">
@@ -205,7 +245,12 @@ export default function SelectiveShareModal({
                 <ChevronLeft className="size-4" />
                 Back
               </Button>
-              <Button size="sm" onClick={handleGenerate} disabled={isLoading}>
+              <Button
+                size="sm"
+                className="bg-indigo-600 hover:bg-indigo-700"
+                onClick={handleGenerate}
+                disabled={isLoading}
+              >
                 {isLoading ? (
                   <>
                     <Loader2 className="size-4 animate-spin" />
@@ -216,17 +261,17 @@ export default function SelectiveShareModal({
                 )}
               </Button>
             </div>
-          </>
+          </div>
         )}
 
         {step === 3 && shareResult && (
-          <>
+          <div className="animate-slide-in flex flex-col gap-4">
             <DialogHeader>
               <DialogTitle>Ready to Share</DialogTitle>
             </DialogHeader>
 
             <div className="flex items-center gap-2 rounded-lg bg-green-50 px-3 py-2.5 text-sm text-green-700">
-              <ShieldCheck className="size-4 shrink-0" />
+              <ShieldCheck className="animate-pop size-4 shrink-0" />
               <span>Cryptographic proof generated</span>
             </div>
 
@@ -266,11 +311,11 @@ export default function SelectiveShareModal({
               <Button variant="outline" size="sm" onClick={resetToStep1}>
                 Share Another
               </Button>
-              <Button size="sm" onClick={handleClose}>
+              <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700" onClick={handleClose}>
                 Done
               </Button>
             </div>
-          </>
+          </div>
         )}
 
       </DialogContent>

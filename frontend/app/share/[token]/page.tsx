@@ -20,8 +20,35 @@ import {
   Clock,
   EyeOff,
   Loader2,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { credentialApi } from '@/lib/api';
+
+function CopyButton({ value, label }: { value: string; label: string }) {
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    await navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      aria-label={`Copy ${label}`}
+      className="shrink-0 rounded p-1 text-gray-400 transition-colors hover:bg-gray-200 hover:text-gray-700"
+    >
+      {copied ? (
+        <Check className="size-3.5 text-green-600" />
+      ) : (
+        <Copy className="size-3.5" />
+      )}
+    </button>
+  );
+}
 
 interface VerificationChecks {
   signatureValid: boolean;
@@ -155,17 +182,23 @@ export default function VerifierPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[600px] overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-200">
+      <div className="animate-scale-in mx-auto max-w-[600px] overflow-hidden rounded-2xl bg-white shadow-md ring-1 ring-gray-200">
         <div className="flex flex-col gap-6 p-6">
 
           {/* Header */}
           <div className="flex flex-col items-center gap-2 text-center">
-            {valid ? (
-              <ShieldCheck className="size-16 text-green-500" />
-            ) : (
-              <ShieldX className="size-16 text-red-500" />
-            )}
-            <h1 className={`text-2xl font-bold ${valid ? 'text-gray-900' : 'text-red-700'}`}>
+            <span
+              className={`animate-pop flex size-20 items-center justify-center rounded-full ${
+                valid ? 'bg-green-50' : 'bg-red-50'
+              }`}
+            >
+              {valid ? (
+                <ShieldCheck className="size-12 text-green-600" />
+              ) : (
+                <ShieldX className="size-12 text-red-500" />
+              )}
+            </span>
+            <h1 className={`text-2xl font-semibold ${valid ? 'text-gray-900' : 'text-red-700'}`}>
               {valid ? 'Cryptographically Verified' : 'Verification Failed'}
             </h1>
             <p className="text-sm text-gray-500">
@@ -218,29 +251,30 @@ export default function VerifierPage() {
           {Object.keys(disclosedFields).length > 0 && (
             <div className="flex flex-col gap-2">
               <h2 className="text-sm font-semibold text-gray-700">Verified Fields</h2>
-              <div className="flex flex-col gap-2">
-                {Object.entries(disclosedFields).map(([fieldName, { value, verified }]) => {
+              <div className="grid gap-2 sm:grid-cols-2">
+                {Object.entries(disclosedFields).map(([fieldName, { value, verified }], i) => {
                   const meta = FIELD_META[fieldName];
                   const Icon = meta?.icon ?? FileText;
                   const label = meta?.label ?? fieldName;
                   return (
                     <div
                       key={fieldName}
-                      className="flex items-center justify-between rounded-lg border border-gray-200 px-3 py-2.5"
+                      style={{ animationDelay: `${i * 60}ms` }}
+                      className="animate-fade-in-up flex flex-col gap-1.5 rounded-lg border border-green-200 bg-green-50/40 p-3"
                     >
-                      <div className="flex items-center gap-2.5">
-                        <Icon className="size-4 shrink-0 text-gray-500" />
-                        <div>
-                          <p className="text-xs text-gray-500">{label}</p>
-                          <p className="font-semibold text-gray-900">{value}</p>
-                        </div>
-                      </div>
-                      {verified && (
-                        <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700">
-                          <CheckCircle className="size-3" />
-                          Verified
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1.5 text-xs text-gray-500">
+                          <Icon className="size-3.5 shrink-0" />
+                          {label}
                         </span>
-                      )}
+                        {verified && (
+                          <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                            <CheckCircle className="size-3" />
+                            Verified
+                          </span>
+                        )}
+                      </div>
+                      <p className="break-words font-semibold text-gray-900">{value}</p>
                     </div>
                   );
                 })}
@@ -291,13 +325,19 @@ export default function VerifierPage() {
               Technical Details ▼
             </summary>
             <div className="mt-2 flex flex-col gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 font-mono text-xs text-gray-600">
-              <div className="flex justify-between gap-4">
+              <div className="flex items-center justify-between gap-2">
                 <span className="shrink-0 text-gray-500">Presentation ID</span>
-                <span className="truncate text-right text-gray-800">{presentationId}</span>
+                <span className="flex min-w-0 items-center gap-1">
+                  <span className="truncate text-gray-800">{presentationId}</span>
+                  <CopyButton value={presentationId} label="presentation ID" />
+                </span>
               </div>
-              <div className="flex justify-between gap-4">
+              <div className="flex items-center justify-between gap-2">
                 <span className="shrink-0 text-gray-500">Algorithm</span>
-                <span className="text-gray-800">EdDSA (Ed25519)</span>
+                <span className="flex items-center gap-1">
+                  <span className="text-gray-800">EdDSA (Ed25519)</span>
+                  <CopyButton value="EdDSA (Ed25519)" label="algorithm" />
+                </span>
               </div>
             </div>
           </details>
@@ -305,11 +345,14 @@ export default function VerifierPage() {
         </div>
 
         {/* Footer */}
-        <div className="flex flex-col items-center gap-1 border-t border-gray-100 py-4 text-center">
-          <div className="flex items-center gap-1.5 text-sm font-medium text-gray-700">
-            <Shield className="size-4 text-indigo-600" />
+        <div className="flex flex-col items-center gap-1.5 border-t border-gray-100 py-4 text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-700 transition-colors hover:bg-indigo-100"
+          >
+            <Shield className="size-4" />
             Verified by TrustLayer
-          </div>
+          </Link>
           <p className="text-xs text-gray-400">
             Cryptographic proof · Merkle Tree · EdDSA
           </p>

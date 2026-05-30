@@ -7,7 +7,7 @@ import { Toaster } from 'sonner';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'TrustLayer — Secure Credential Sharing',
+  title: 'TrustLayer Secure Credential Sharing',
   description: 'Selectively share and cryptographically verify digital credentials.',
 };
 

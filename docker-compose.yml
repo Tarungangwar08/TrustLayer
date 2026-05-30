@@ -29,24 +29,31 @@ services:
       NODE_ENV: production
       PORT: 5000
       DATABASE_URL: postgresql://postgres:password@postgres:5432/selective_disclosure
-      JWT_SECRET: change-this-in-production-min-32-chars
+      JWT_SECRET: trustlayer-jwt-secret-key-2024-production
       JWT_EXPIRES_IN: 7d
-      ENCRYPTION_KEY: change-this-32-char-encryption-key1
+      ENCRYPTION_KEY: trustlayer32charencryptionkey2024
       FRONTEND_URL: http://localhost:3000
     depends_on:
       postgres:
         condition: service_healthy
+    command: >
+      sh -c "npx prisma migrate deploy && node dist/index.js"
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        BACKEND_INTERNAL_URL: http://backend:5000
     container_name: selective_disclosure_frontend
     restart: always
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:5000/api
+      NODE_ENV: production
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+      BACKEND_INTERNAL_URL: http://backend:5000
       NEXT_PUBLIC_APP_URL: http://localhost:3000
     depends_on:
       - backend

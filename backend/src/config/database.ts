@@ -16,7 +16,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 export async function connectDatabase(): Promise<void> {
   await prisma.$connect();
-  console.log('Database connected');
 }
 
 export async function disconnectDatabase(): Promise<void> {

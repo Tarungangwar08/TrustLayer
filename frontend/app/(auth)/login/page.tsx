@@ -38,16 +38,20 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-muted/30 px-4">
-      <div className="mb-8 flex flex-col items-center gap-2">
-        <div className="flex items-center gap-2">
-          <Shield className="size-8 text-primary" />
-          <span className="text-2xl font-semibold tracking-tight">TrustLayer</span>
+    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-indigo-50 via-white to-white px-4">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-[radial-gradient(60%_60%_at_50%_0%,theme(colors.indigo.100),transparent)]" />
+
+      <div className="animate-fade-in-up mb-8 flex flex-col items-center gap-2">
+        <div className="flex items-center gap-2.5">
+          <span className="flex size-11 items-center justify-center rounded-xl bg-indigo-600 shadow-md">
+            <Shield className="size-6 text-white" />
+          </span>
+          <span className="text-3xl font-semibold tracking-tight text-gray-900">TrustLayer</span>
         </div>
-        <p className="text-sm text-muted-foreground">Secure Credential Sharing</p>
+        <p className="text-sm text-gray-500">Secure credential sharing made simple</p>
       </div>
 
-      <Card className="w-full max-w-sm">
+      <Card className="animate-scale-in w-full max-w-sm shadow-md">
         <CardHeader>
           <CardTitle>Sign in</CardTitle>
           <CardDescription>Enter your credentials to access your account</CardDescription>
@@ -65,6 +69,7 @@ export default function LoginPage() {
                 required
                 disabled={isLoading}
                 autoComplete="email"
+                className="transition-shadow focus-visible:border-indigo-500 focus-visible:ring-indigo-500/30"
               />
             </div>
 
@@ -79,10 +84,15 @@ export default function LoginPage() {
                 required
                 disabled={isLoading}
                 autoComplete="current-password"
+                className="transition-shadow focus-visible:border-indigo-500 focus-visible:ring-indigo-500/30"
               />
             </div>
 
-            <Button type="submit" className="mt-2 w-full" disabled={isLoading}>
+            <Button
+              type="submit"
+              className="mt-2 w-full bg-indigo-600 transition-all duration-150 hover:scale-[1.02] hover:bg-indigo-700 hover:shadow-md active:scale-100"
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="animate-spin" />
@@ -94,9 +104,9 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <p className="mt-4 text-center text-sm text-muted-foreground">
+          <p className="mt-4 text-center text-sm text-gray-500">
             Don&apos;t have an account?{' '}
-            <Link href="/register" className="font-medium text-primary hover:underline">
+            <Link href="/register" className="font-medium text-indigo-600 hover:underline">
               Register
             </Link>
           </p>
